@@ -1,0 +1,16 @@
+#!/bin/sh
+if [ $# -ne 1 ]
+then   echo "usage $0: base_filename"; exit 0;
+fi
+if [ -f "$1.z80" ]
+then
+   header=`dd bs=1 count=8 if="$1.z80"`
+   comp=`echo -e -n "Z80ASM\x1a\x0a"`
+   if [ "$header" = "$comp" ]
+   then  dd bs=1 skip=10 if="$1.z80" of="$1.bin"
+         exit 0;
+   else  echo "wrong header"; exit 2;
+   fi
+else
+   echo "can't open file $1.z80"; exit 1
+fi
